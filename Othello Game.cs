@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Speech.Synthesis;
@@ -11,17 +12,14 @@ namespace Game2
         {
             InitializeComponent();
 
-            savegame.preload();
+            savegame.PreLoad();
         }
-
-        public GameEngine gameengine = new GameEngine();
 
         public string P1;
         public string P2;
 
         public SaveGame savegame = new SaveGame();
 
-        public bool endgame = false;
         public bool validmove;
         public bool validmovepossible;
         public bool speechenabled = false;
@@ -62,6 +60,8 @@ namespace Game2
         }
         internal void GameBoardTilePlacer() //Places the initial tiles
         {
+            GameEngine ge = new GameEngine(gameboardTiles, gameboardPictures);
+
             for (int i = 0; i < gameboardRows; i++) //run through the rows
             {
                 for (int j = 0; j < gameboardCols; j++) //run through the columns
@@ -98,13 +98,14 @@ namespace Game2
                     }
                 }
             }
-            ValidMovePossible(previousplayer);
+            ge.ValidMovePossible(previousplayer);
         }
 
         private void TileClickListener(object sender, EventArgs e) //whenever a picuture box is clicked, run this event
         {
 
             PlayerTurn pt = new PlayerTurn(); //new player turn instance
+            GameEngine ge = new GameEngine(gameboardTiles,gameboardPictures);
             var synthesizer = new SpeechSynthesizer();
 
             pt.playerturn(previousplayer); //send the previous players turn to playerturn method
@@ -122,31 +123,92 @@ namespace Game2
                         }
                         else
                         {
-                            CheckSurroundings(i, j, previousplayer); //send the picturebox information to the check surrounding method
+                            ge.CheckSurroundings(i, j, previousplayer); //send the picturebox information to the check surrounding method
 
-                            if (validmove == false) { } //if checksurroundings find no valid move do nothing
+                            gameboardPictures = ge.gameboardPictures;
+                            gameboardTiles = ge.gameboardTiles;
+
+                            if (ge.validmove == false) { } //if checksurroundings find no valid move do nothing
                             else
                             {
                                 gameboardTiles[i, j] = pt.currentplayer;// change tiles to current player colour
                                 gameboardPictures[i, j].Image = Image.FromFile(pt.currentplayer + ".png"); // change to variable image based off of player
 
-                                TileCount();
+                                ge.TileCount(); ///////////
+                                label1.Text = Convert.ToString(ge.P1Tile);
+                                label2.Text = Convert.ToString(ge.P2Tile);
+
+                                if (ge.endgame == true)
+                                {
+                                    if (ge.P1Tile == ge.P2Tile)
+                                    {
+                                        MessageBox.Show("The game ends in a draw!!");
+                                        this.Close();
+                                    }
+                                    else if (ge.P1Tile > ge.P2Tile)
+                                    {
+                                        MessageBox.Show(textBox1.Text + " wins the game!!");
+                                        this.Close();
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(textBox2.Text + " wins the game!!");
+                                        this.Close();
+                                    }
+                                }
 
                                 previousplayer = pt.currentplayer; //turn current player into previous player
 
 
-                                ValidMovePossible(previousplayer);
 
-                                if (validmovepossible == false)
+                                ge.ValidMovePossible(previousplayer);
+                                if (ge.validmovepossible != true)
+                                {
+                                    if (ge.nextplayer == 0)
+                                    {
+                                        MessageBox.Show("There are no available moves for " + textBox1.Text + ". Switching to " + textBox2.Text);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("There are no available moves for " + textBox2.Text + ". Switching to " + textBox1.Text);
+                                    }
+                                }
+
+                                if (ge.validmovepossible == false)
                                 {
                                     pt.playerturn(previousplayer);
                                     previousplayer = pt.currentplayer;
 
-                                    ValidMovePossible(previousplayer);
-
-                                    if (validmovepossible == false && endgame == false)
+                                    ge.ValidMovePossible(previousplayer);
+                                    if (ge.validmovepossible != true)
                                     {
-                                        WinAnnounce();
+                                        if (ge.nextplayer == 0)
+                                        {
+                                            MessageBox.Show("There are no available moves for " + textBox1.Text + ". Switching to " + textBox2.Text);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("There are no available moves for " + textBox2.Text + ". Switching to " + textBox1.Text);
+                                        }
+                                    }
+
+                                    if (ge.validmovepossible == false && ge.endgame == false)
+                                    {
+                                        if (ge.P1Tile == ge.P2Tile)
+                                        {
+                                            MessageBox.Show("The game ends in a draw!!");
+                                            this.Close();
+                                        }
+                                        else if (ge.P1Tile > ge.P2Tile)
+                                        {
+                                            MessageBox.Show(textBox1.Text + " wins the game!!");
+                                            this.Close();
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show(textBox2.Text + " wins the game!!");
+                                            this.Close();
+                                        }
                                     }
                                 }
                             }
@@ -175,7 +237,7 @@ namespace Game2
             }
 
         }
-        public void CheckSurroundings(int placedX, int placedY, int oppplayer)
+       /* public void CheckSurroundings(int placedX, int placedY, int oppplayer)
         {
             ValidPlacement vp = new ValidPlacement(); // new valid placement instance
             int curplayer = 10; //default current player
@@ -235,7 +297,7 @@ namespace Game2
             {
                 MessageBox.Show("This is not a valid move.");
             }
-        }
+        }*/
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -256,7 +318,7 @@ namespace Game2
 
         }
 
-        public void changetiles(int startx, int starty, int endx, int endy, int curplayer)
+       /* public void changetiles(int startx, int starty, int endx, int endy, int curplayer)
         {
             int diffx = endx - startx;
             int diffy = endy - starty;
@@ -324,8 +386,8 @@ namespace Game2
                 gameboardTiles[xplace, yplace] = curplayer;
                 gameboardPictures[xplace, yplace].Image = Image.FromFile(curplayer + ".png");
             }
-        }
-        public void TileCount()
+        }*/
+       /* public void TileCount()
         {
             int P1Tile = 0;
             int P2Tile = 0;
@@ -348,8 +410,8 @@ namespace Game2
             label2.Text = Convert.ToString(P2Tile);
 
             WinCheck(P1Tile, P2Tile);
-        }
-        public void WinAnnounce()
+        }*/
+       /* public void WinAnnounce()
         {
             int P1Win = Convert.ToInt32(label1.Text);
             int P2Win = Convert.ToInt32(label2.Text);
@@ -374,8 +436,8 @@ namespace Game2
                 endgame = true;
                 this.Close();
             }
-        }
-        public void WinCheck(int P1Win, int P2Win)
+        }*/
+       /* public void WinCheck(int P1Win, int P2Win)
         {
             int freespaces = 0;
 
@@ -411,9 +473,9 @@ namespace Game2
                     this.Close();
                 }
             }
-        }
+        }*/
 
-        public void ValidMovePossible(int prevplayer)
+       /* public void ValidMovePossible(int prevplayer)
         {
             int nextplayer;
 
@@ -499,7 +561,7 @@ namespace Game2
                     MessageBox.Show("There are no available moves for " + textBox2.Text + ". Switching to " + textBox1.Text);
                 }
             }
-        }
+        }*/
 
         private void InformationPanelMenuItem_Click(object sender, EventArgs e)
         {
@@ -529,47 +591,65 @@ namespace Game2
         {
             if (gameboardPictures[0, 0] != null)
             {
-                SaveGame savegame = new SaveGame();
-                DialogResult savecurrentgame = MessageBox.Show("There is a game currently ongoing! Do you wish to save this game?", "Save Game?", MessageBoxButtons.YesNo);
-                //savegame.savegame(textBox1.Text, textBox2.Text, gameboardTiles, previousplayer);
+                DialogResult savecurrentgame = MessageBox.Show("Do you wish to save this game?", "Save Game?", MessageBoxButtons.YesNo);
+                if (savecurrentgame == DialogResult.Yes)
+                {
+                    savegame.savegame(P1, P2, gameboardTiles, previousplayer);
+                }
+
+                DialogResult renameplayers = MessageBox.Show("Do you wish to rename the players in this game?", "Rename players?", MessageBoxButtons.YesNo);
+                if (renameplayers == DialogResult.Yes)
+                {
+                    textBox1.Text = Interaction.InputBox("What would you like to name the 1st player?", "Name 1st Player");
+                    textBox2.Text = Interaction.InputBox("What would you like to name the 2nd player?", "Name 2nd Player");
+                }
+
+                Array.Clear(gameboardPictures,0,gameboardPictures.Length);
+                Array.Clear(gameboardTiles,0,gameboardTiles.Length);
+
+                previousplayer = 1;
             }
-            else
+
+            if (textBox1.Text == "")
             {
-                if (textBox1.Text == "")
-                {
-                    textBox1.Text = "Player 1";
-                }
-                if (textBox2.Text == "")
-                {
-                    textBox2.Text = "Player 2";
-                }
-                textBox1.Enabled = false;
-                textBox2.Enabled = false;
-
-                label1.Text = Convert.ToString(2);
-                label2.Text = Convert.ToString(2);
-
-                P1 = textBox1.Text;
-                P2 = textBox2.Text;
-
-                P1toplay.Visible = true;
-                exitToolStripMenuItem.Visible = true;
-                saveGameToolStripMenuItem.Visible = true;
-
-                GameBoardTileSetUp(); //call gameboard Tile setup method
+                textBox1.Text = "Player 1";
             }
+            if (textBox2.Text == "")
+            {
+                textBox2.Text = "Player 2";
+            }
+            textBox1.Enabled = false;
+            textBox2.Enabled = false;
+
+            label1.Text = Convert.ToString(2);
+            label2.Text = Convert.ToString(2);
+
+            P1 = textBox1.Text;
+            P2 = textBox2.Text;
+
+            P1toplay.Visible = true;
+            exitToolStripMenuItem.Visible = true;
+            saveGameToolStripMenuItem.Visible = true;
+
+            GameBoardTileSetUp(); //call gameboard Tile setup method
+
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("O'Neillo is a take on the classic game Othello. This game should work in the exact same way you would expect Othello to.");
+            HelpForm helpForm = new HelpForm();
+            helpForm.ShowDialog();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveGame savegame = new SaveGame();
             DialogResult savecurrentgame = MessageBox.Show("Do you wish to save this game?", "Save Game?", MessageBoxButtons.YesNo);
+            if (savecurrentgame == DialogResult.Yes)
+            {
+                savegame.savegame(P1, P2, gameboardTiles, previousplayer);
+            }
 
+            this.Close();
 
         }
 
@@ -578,9 +658,7 @@ namespace Game2
             DialogResult savecurrentgame = MessageBox.Show("Do you wish to save this game?", "Save Game?", MessageBoxButtons.YesNo);
             if (savecurrentgame == DialogResult.Yes)
             {
-                SaveDataForm form = new SaveDataForm(P1, P2, gameboardTiles, previousplayer, savegame);
-
-                form.Show();
+                savegame.savegame(P1, P2, gameboardTiles, previousplayer);
             }
 
 
@@ -588,7 +666,7 @@ namespace Game2
 
         private void restoreGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            savegame.LoadGame();
         }
     }
 }

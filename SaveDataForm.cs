@@ -14,6 +14,10 @@ namespace Game2
 {
     public partial class SaveDataForm : Form
     {
+
+        List<string> savetitles = new List<string>();
+
+        public bool userexit = false;
         public DialogResult namedsave;
         public string P1;
         public string P2;
@@ -22,19 +26,46 @@ namespace Game2
         public string SaveTitle;
         public SaveGame SaveGame;
 
-        public SaveDataForm(string p1, string p2, int[,] digitarray, int prevplayer, SaveGame saveGame)
+        public string button;
+        public int SaveFileSelect;
+
+        public SaveDataForm()
         {
             InitializeComponent();
 
-            P1 = p1;
-            P2 = p2;
-            Digitarray = digitarray;
-            Prevplayer = prevplayer;
-            SaveGame = saveGame;
+            
 
         }
+        internal void ShowForm(bool savesfull)
+        {
+            if (savesfull == true)
+            {
+                SaveFile1.Text = savetitles[0];
+                SaveFile2.Text = savetitles[1];
+                SaveFile3.Text = savetitles[2];
+                SaveFile4.Text = savetitles[3];
+                SaveFile5.Text = savetitles[4];
 
-        public int SaveFileSelect;
+                this.ShowDialog();
+            }
+            else
+            {
+                namedsave = MessageBox.Show("Do you want to name your save?", "File save name", MessageBoxButtons.YesNo);
+                if (namedsave == DialogResult.Yes)
+                {
+                    SaveTitle = Interaction.InputBox("What would you like to name this save file?", "Name save file");
+                }
+                else
+                {
+                    SaveTitle = DateTime.Now.ToString();
+                }
+            }
+        }
+
+        internal void SaveNames(string title)
+        {
+            savetitles.Add(title);
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -49,10 +80,8 @@ namespace Game2
             {
                 SaveTitle = DateTime.Now.ToString();
             }
-
-            label1.Text = SaveTitle;
-
-            SaveGame.savegame(P1, P2, Digitarray, Prevplayer, SaveFileSelect);
+            savetitles.RemoveAt(SaveFileSelect - 1);
+            savetitles.Insert(SaveFileSelect - 1, SaveTitle);
 
             this.Close();
         }
@@ -70,10 +99,8 @@ namespace Game2
             {
                 SaveTitle = DateTime.Now.ToString();
             }
-
-            label2.Text = SaveTitle;
-
-            SaveGame.savegame(P1, P2, Digitarray, Prevplayer, SaveFileSelect);
+            savetitles.RemoveAt(SaveFileSelect - 1);
+            savetitles.Insert(SaveFileSelect - 1, SaveTitle);
 
             this.Close();
 
@@ -92,10 +119,8 @@ namespace Game2
             {
                 SaveTitle = DateTime.Now.ToString();
             }
-
-            label3.Text = SaveTitle;
-
-            SaveGame.savegame(P1, P2, Digitarray, Prevplayer, SaveFileSelect);
+            savetitles.RemoveAt(SaveFileSelect - 1);
+            savetitles.Insert(SaveFileSelect - 1, SaveTitle);
 
             this.Close();
         }
@@ -105,18 +130,16 @@ namespace Game2
             SaveFileSelect = 4;
 
             namedsave = MessageBox.Show("Do you want to name your save?", "File save name", MessageBoxButtons.YesNo);
-            if (namedsave == DialogResult.Yes) 
-            { 
+            if (namedsave == DialogResult.Yes)
+            {
                 SaveTitle = Interaction.InputBox("What would you like to name this save file?", "Name save file");
             }
             else
             {
                 SaveTitle = DateTime.Now.ToString();
             }
-
-            label4.Text = SaveTitle;
-
-            SaveGame.savegame(P1, P2, Digitarray, Prevplayer, SaveFileSelect);
+            savetitles.RemoveAt(SaveFileSelect - 1);
+            savetitles.Insert(SaveFileSelect - 1, SaveTitle);
 
             this.Close();
         }
@@ -134,11 +157,23 @@ namespace Game2
             {
                 SaveTitle = DateTime.Now.ToString();
             }
+            savetitles.RemoveAt(SaveFileSelect - 1);
+            savetitles.Add(SaveTitle);
 
-            label5.Text = SaveTitle;
+            this.Close();
+        }
 
-            SaveGame.savegame(P1, P2, Digitarray, Prevplayer, SaveFileSelect);
+        private void SaveDataForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                userexit = true;
+            }
+        }
 
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            userexit = true;
             this.Close();
         }
     }

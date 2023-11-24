@@ -28,145 +28,112 @@
         /// </summary>
         private void InitializeComponent()
         {
-            B1 = new Button();
-            button2 = new Button();
-            button3 = new Button();
-            button4 = new Button();
-            button5 = new Button();
+            SaveFile1 = new Button();
+            SaveFile2 = new Button();
+            SaveFile3 = new Button();
+            SaveFile4 = new Button();
+            SaveFile5 = new Button();
+            button1 = new Button();
             label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
             SuspendLayout();
             // 
-            // B1
+            // SaveFile1
             // 
-            B1.Location = new Point(98, 31);
-            B1.Name = "B1";
-            B1.Size = new Size(229, 49);
-            B1.TabIndex = 0;
-            B1.Text = "Save File 1";
-            B1.UseVisualStyleBackColor = true;
-            B1.Click += button1_Click;
+            SaveFile1.Location = new Point(12, 12);
+            SaveFile1.Name = "SaveFile1";
+            SaveFile1.Size = new Size(491, 83);
+            SaveFile1.TabIndex = 0;
+            SaveFile1.Text = "Save File 1";
+            SaveFile1.UseVisualStyleBackColor = true;
+            SaveFile1.Click += button1_Click;
             // 
-            // button2
+            // SaveFile2
             // 
-            button2.Location = new Point(98, 117);
-            button2.Name = "button2";
-            button2.Size = new Size(229, 50);
-            button2.TabIndex = 1;
-            button2.Text = "Save File 2";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            SaveFile2.Location = new Point(12, 100);
+            SaveFile2.Name = "SaveFile2";
+            SaveFile2.Size = new Size(491, 83);
+            SaveFile2.TabIndex = 1;
+            SaveFile2.Text = "Save File 2";
+            SaveFile2.UseVisualStyleBackColor = true;
+            SaveFile2.Click += button2_Click;
             // 
-            // button3
+            // SaveFile3
             // 
-            button3.Location = new Point(98, 201);
-            button3.Name = "button3";
-            button3.Size = new Size(229, 50);
-            button3.TabIndex = 2;
-            button3.Text = "Save File 3";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
+            SaveFile3.Location = new Point(12, 188);
+            SaveFile3.Name = "SaveFile3";
+            SaveFile3.Size = new Size(491, 83);
+            SaveFile3.TabIndex = 2;
+            SaveFile3.Text = "Save File 3";
+            SaveFile3.UseVisualStyleBackColor = true;
+            SaveFile3.Click += button3_Click;
             // 
-            // button4
+            // SaveFile4
             // 
-            button4.Location = new Point(98, 289);
-            button4.Name = "button4";
-            button4.Size = new Size(229, 50);
-            button4.TabIndex = 3;
-            button4.Text = "Save File 4";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
+            SaveFile4.Location = new Point(12, 276);
+            SaveFile4.Name = "SaveFile4";
+            SaveFile4.Size = new Size(491, 83);
+            SaveFile4.TabIndex = 3;
+            SaveFile4.Text = "Save File 4";
+            SaveFile4.UseVisualStyleBackColor = true;
+            SaveFile4.Click += button4_Click;
             // 
-            // button5
+            // SaveFile5
             // 
-            button5.Location = new Point(98, 372);
-            button5.Name = "button5";
-            button5.Size = new Size(229, 50);
-            button5.TabIndex = 4;
-            button5.Text = "Save File 5";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
+            SaveFile5.Location = new Point(12, 364);
+            SaveFile5.Name = "SaveFile5";
+            SaveFile5.Size = new Size(491, 83);
+            SaveFile5.TabIndex = 4;
+            SaveFile5.Text = "Save File 5";
+            SaveFile5.UseVisualStyleBackColor = true;
+            SaveFile5.Click += button5_Click;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(615, 404);
+            button1.Name = "button1";
+            button1.Size = new Size(112, 34);
+            button1.TabIndex = 5;
+            button1.Text = "Close";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click_1;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(373, 31);
+            label1.Location = new Point(574, 188);
+            label1.MaximumSize = new Size(200, 200);
             label1.Name = "label1";
-            label1.Size = new Size(59, 25);
-            label1.TabIndex = 5;
-            label1.Text = "label1";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(373, 117);
-            label2.Name = "label2";
-            label2.Size = new Size(59, 25);
-            label2.TabIndex = 6;
-            label2.Text = "label2";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new Point(373, 201);
-            label3.Name = "label3";
-            label3.Size = new Size(59, 25);
-            label3.TabIndex = 7;
-            label3.Text = "label3";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(373, 289);
-            label4.Name = "label4";
-            label4.Size = new Size(59, 25);
-            label4.TabIndex = 8;
-            label4.Text = "label4";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new Point(373, 372);
-            label5.Name = "label5";
-            label5.Size = new Size(59, 25);
-            label5.TabIndex = 9;
-            label5.Text = "label5";
+            label1.Size = new Size(198, 75);
+            label1.TabIndex = 6;
+            label1.Text = "Max save files reached! Please select a save file to overwrite.";
             // 
             // SaveDataForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(button5);
-            Controls.Add(button4);
-            Controls.Add(button3);
-            Controls.Add(button2);
-            Controls.Add(B1);
+            Controls.Add(button1);
+            Controls.Add(SaveFile5);
+            Controls.Add(SaveFile4);
+            Controls.Add(SaveFile3);
+            Controls.Add(SaveFile2);
+            Controls.Add(SaveFile1);
             Name = "SaveDataForm";
             Text = "SaveDataForm";
+            FormClosing += SaveDataForm_FormClosing;
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private Button B1;
-        private Button button2;
-        private Button button3;
-        private Button button4;
-        private Button button5;
+        private Button SaveFile1;
+        private Button SaveFile2;
+        private Button SaveFile3;
+        private Button SaveFile4;
+        private Button SaveFile5;
+        private Button button1;
         private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label label4;
-        private Label label5;
     }
 }
