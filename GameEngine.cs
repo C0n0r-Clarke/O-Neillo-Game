@@ -25,7 +25,7 @@ namespace Game2
             gameboardTiles = Tileboard; 
             gameboardPictures = Pictureboard;
         }
-        public void CheckSurroundings(int placedX, int placedY, int oppplayer)
+        internal void CheckSurroundings(int placedX, int placedY, int oppplayer)
         {
             ValidPlacement vp = new ValidPlacement(); // new valid placement instance
             int curplayer = 10; //default current player
@@ -34,14 +34,11 @@ namespace Game2
             if (oppplayer == 0) { curplayer = 1; } //current player is the opposite to the previous player
             else if (oppplayer == 1) { curplayer = 0; }
 
-
             int xcheck; //set default value 
             int ycheck; // set default value 
 
             int furtherx;
             int furthery;
-
-
 
             for (int i = 0; i < vp.ysurrounding.Length; ++i) //run through each possible movement around the placed tile
             {
@@ -86,9 +83,8 @@ namespace Game2
                 MessageBox.Show("This is not a valid move.");
             }
         }
-        public void ValidMovePossible(int prevplayer)
+        internal void ValidMovePossible(int prevplayer)
         {
-
             if (prevplayer == 0)
             {
                 nextplayer = 1;
@@ -156,12 +152,9 @@ namespace Game2
                         }
                     }
                 }
-
             }
-
-
         }
-        public void changetiles(int startx, int starty, int endx, int endy, int curplayer)
+        internal void changetiles(int startx, int starty, int endx, int endy, int curplayer)
         {
             int diffx = endx - startx;
             int diffy = endy - starty;
@@ -190,8 +183,6 @@ namespace Game2
 
             int xplace;
             int yplace;
-
-
 
             for (int i = 1; i < rep; i++)
             {
@@ -230,7 +221,7 @@ namespace Game2
                 gameboardPictures[xplace, yplace].Image = Image.FromFile(curplayer + ".png");
             }
         }
-        public void TileCount()
+        internal void TileCount()
         {
 
             for (int i = 0; i < 8; i++)
@@ -250,7 +241,7 @@ namespace Game2
 
             WinCheck();
         }
-        public void WinCheck()
+        internal void WinCheck()
         {
             int freespaces = 0;
 
@@ -269,7 +260,26 @@ namespace Game2
             {
                 endgame = true;
             }
-       
+        }
+        public void ResetBoard()
+        {
+            for(int i = 0;i < 8; i++)
+            {
+                for(int j = 0; j < 8;j++)
+                {
+                    gameboardTiles[i, j] = 10;
+                    gameboardPictures[i, j].Image = Image.FromFile("10.png");
+
+                }
+            }
+            gameboardTiles[3, 4] = 0;
+            gameboardPictures[3, 4].Image = Image.FromFile("0.png");
+            gameboardTiles[4, 3] = 0;
+            gameboardPictures[4,3].Image = Image.FromFile("0.png");
+            gameboardTiles[3, 3] = 1;
+            gameboardPictures[3, 3].Image = Image.FromFile("1.png");
+            gameboardTiles[4, 4] = 1;
+            gameboardPictures[4, 4].Image = Image.FromFile("1.png");
         }
     }
 }

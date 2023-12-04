@@ -33,6 +33,7 @@
             startGameToolStripMenuItem = new ToolStripMenuItem();
             newGameToolStripMenuItem = new ToolStripMenuItem();
             saveGameToolStripMenuItem = new ToolStripMenuItem();
+            restoreGameToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             InformationPanelMenuItem = new ToolStripMenuItem();
@@ -48,7 +49,6 @@
             label1 = new Label();
             pictureBox2 = new PictureBox();
             pictureBox1 = new PictureBox();
-            restoreGameToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)P2toplay).BeginInit();
@@ -73,27 +73,33 @@
             startGameToolStripMenuItem.Name = "startGameToolStripMenuItem";
             startGameToolStripMenuItem.Size = new Size(74, 29);
             startGameToolStripMenuItem.Text = "Game";
-            startGameToolStripMenuItem.Click += startGameToolStripMenuItem_Click;
             // 
             // newGameToolStripMenuItem
             // 
             newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
-            newGameToolStripMenuItem.Size = new Size(270, 34);
+            newGameToolStripMenuItem.Size = new Size(224, 34);
             newGameToolStripMenuItem.Text = "New Game";
             newGameToolStripMenuItem.Click += newGameToolStripMenuItem_Click;
             // 
             // saveGameToolStripMenuItem
             // 
             saveGameToolStripMenuItem.Name = "saveGameToolStripMenuItem";
-            saveGameToolStripMenuItem.Size = new Size(270, 34);
+            saveGameToolStripMenuItem.Size = new Size(224, 34);
             saveGameToolStripMenuItem.Text = "Save Game";
             saveGameToolStripMenuItem.Visible = false;
             saveGameToolStripMenuItem.Click += saveGameToolStripMenuItem_Click;
             // 
+            // restoreGameToolStripMenuItem
+            // 
+            restoreGameToolStripMenuItem.Name = "restoreGameToolStripMenuItem";
+            restoreGameToolStripMenuItem.Size = new Size(224, 34);
+            restoreGameToolStripMenuItem.Text = "Restore Game";
+            restoreGameToolStripMenuItem.Click += restoreGameToolStripMenuItem_Click;
+            // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(270, 34);
+            exitToolStripMenuItem.Size = new Size(224, 34);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Visible = false;
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
@@ -129,7 +135,6 @@
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             helpToolStripMenuItem.Size = new Size(65, 29);
             helpToolStripMenuItem.Text = "Help";
-            helpToolStripMenuItem.Click += helpToolStripMenuItem_Click_1;
             // 
             // aboutToolStripMenuItem
             // 
@@ -232,13 +237,6 @@
             pictureBox1.TabIndex = 2;
             pictureBox1.TabStop = false;
             // 
-            // restoreGameToolStripMenuItem
-            // 
-            restoreGameToolStripMenuItem.Name = "restoreGameToolStripMenuItem";
-            restoreGameToolStripMenuItem.Size = new Size(270, 34);
-            restoreGameToolStripMenuItem.Text = "Restore Game";
-            restoreGameToolStripMenuItem.Click += restoreGameToolStripMenuItem_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -254,6 +252,7 @@
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "O'Neillo Game v1.0";
+            FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();

@@ -14,7 +14,6 @@ namespace Game2
 {
     public partial class SaveDataForm : Form
     {
-
         List<string> savetitles = new List<string>();
 
         public bool userexit = false;
@@ -32,12 +31,11 @@ namespace Game2
         public SaveDataForm()
         {
             InitializeComponent();
-
-            
-
         }
         internal void ShowForm(bool savesfull)
         {
+            SaveTitle = null;
+
             if (savesfull == true)
             {
                 SaveFile1.Text = savetitles[0];
@@ -61,12 +59,19 @@ namespace Game2
                 }
             }
         }
+        internal void LoadItems(List<SaveGame.GameStateObject> Gameloads)
+        {
+            for (int i = 0; i < savetitles.Count; i++)
+            {
+                comboBox1.Items.Add(savetitles[i]);
+            }
 
+            this.ShowDialog();
+        }
         internal void SaveNames(string title)
         {
             savetitles.Add(title);
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             SaveFileSelect = 1;
@@ -85,7 +90,6 @@ namespace Game2
 
             this.Close();
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             SaveFileSelect = 2;
@@ -105,7 +109,6 @@ namespace Game2
             this.Close();
 
         }
-
         private void button3_Click(object sender, EventArgs e)
         {
             SaveFileSelect = 3;
@@ -124,7 +127,6 @@ namespace Game2
 
             this.Close();
         }
-
         private void button4_Click(object sender, EventArgs e)
         {
             SaveFileSelect = 4;
@@ -143,7 +145,6 @@ namespace Game2
 
             this.Close();
         }
-
         private void button5_Click(object sender, EventArgs e)
         {
             SaveFileSelect = 5;
@@ -162,7 +163,6 @@ namespace Game2
 
             this.Close();
         }
-
         private void SaveDataForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -170,11 +170,9 @@ namespace Game2
                 userexit = true;
             }
         }
-
-        private void button1_Click_1(object sender, EventArgs e)
+        private void Load_Click(object sender, EventArgs e)
         {
-            userexit = true;
-            this.Close();
+            MessageBox.Show(Convert.ToString(comboBox1.SelectedItem));
         }
     }
 }

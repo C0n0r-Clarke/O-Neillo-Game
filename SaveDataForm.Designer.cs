@@ -35,6 +35,8 @@
             SaveFile5 = new Button();
             button1 = new Button();
             label1 = new Label();
+            comboBox1 = new ComboBox();
+            Load = new Button();
             SuspendLayout();
             // 
             // SaveFile1
@@ -95,7 +97,6 @@
             button1.TabIndex = 5;
             button1.Text = "Close";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click_1;
             // 
             // label1
             // 
@@ -107,11 +108,31 @@
             label1.TabIndex = 6;
             label1.Text = "Max save files reached! Please select a save file to overwrite.";
             // 
+            // comboBox1
+            // 
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(574, 38);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(182, 33);
+            comboBox1.TabIndex = 7;
+            // 
+            // Load
+            // 
+            Load.Location = new Point(636, 107);
+            Load.Name = "Load";
+            Load.Size = new Size(112, 34);
+            Load.TabIndex = 8;
+            Load.Text = "Load";
+            Load.UseVisualStyleBackColor = true;
+            Load.Click += Load_Click;
+            // 
             // SaveDataForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(Load);
+            Controls.Add(comboBox1);
             Controls.Add(label1);
             Controls.Add(button1);
             Controls.Add(SaveFile5);
@@ -135,5 +156,7 @@
         private Button SaveFile5;
         private Button button1;
         private Label label1;
+        private ComboBox comboBox1;
+        private Button Load;
     }
 }

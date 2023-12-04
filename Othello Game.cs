@@ -7,22 +7,25 @@ namespace Game2
 {
     public partial class Form1 : Form
     {
+        public SaveGame savegame = new SaveGame();
 
         public Form1()
         {
             InitializeComponent();
 
             savegame.PreLoad();
+
+            speakToolStripMenuItem.Checked = savegame.speechstart;
+            InformationPanelMenuItem.Checked = savegame.infopanlestart;
         }
 
         public string P1;
         public string P2;
 
-        public SaveGame savegame = new SaveGame();
+        public bool speechenabled;
 
-        public bool validmove;
-        public bool validmovepossible;
-        public bool speechenabled = false;
+        int P1Points;
+        int P2Points;
 
         int previousplayer = 1; // Black starts 
 
@@ -105,8 +108,7 @@ namespace Game2
         {
 
             PlayerTurn pt = new PlayerTurn(); //new player turn instance
-            GameEngine ge = new GameEngine(gameboardTiles,gameboardPictures);
-            var synthesizer = new SpeechSynthesizer();
+            GameEngine ge = new GameEngine(gameboardTiles, gameboardPictures);
 
             pt.playerturn(previousplayer); //send the previous players turn to playerturn method
 
@@ -134,32 +136,18 @@ namespace Game2
                                 gameboardTiles[i, j] = pt.currentplayer;// change tiles to current player colour
                                 gameboardPictures[i, j].Image = Image.FromFile(pt.currentplayer + ".png"); // change to variable image based off of player
 
-                                ge.TileCount(); ///////////
-                                label1.Text = Convert.ToString(ge.P1Tile);
-                                label2.Text = Convert.ToString(ge.P2Tile);
+                                ge.TileCount();
+                                P1Points = ge.P1Tile;
+                                P2Points = ge.P2Tile;
+                                label1.Text = Convert.ToString(P1Points);
+                                label2.Text = Convert.ToString(P2Points);
 
                                 if (ge.endgame == true)
                                 {
-                                    if (ge.P1Tile == ge.P2Tile)
-                                    {
-                                        MessageBox.Show("The game ends in a draw!!");
-                                        this.Close();
-                                    }
-                                    else if (ge.P1Tile > ge.P2Tile)
-                                    {
-                                        MessageBox.Show(textBox1.Text + " wins the game!!");
-                                        this.Close();
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show(textBox2.Text + " wins the game!!");
-                                        this.Close();
-                                    }
+                                    WinAnnounce();
                                 }
 
                                 previousplayer = pt.currentplayer; //turn current player into previous player
-
-
 
                                 ge.ValidMovePossible(previousplayer);
                                 if (ge.validmovepossible != true)
@@ -194,42 +182,13 @@ namespace Game2
 
                                     if (ge.validmovepossible == false && ge.endgame == false)
                                     {
-                                        if (ge.P1Tile == ge.P2Tile)
-                                        {
-                                            MessageBox.Show("The game ends in a draw!!");
-                                            this.Close();
-                                        }
-                                        else if (ge.P1Tile > ge.P2Tile)
-                                        {
-                                            MessageBox.Show(textBox1.Text + " wins the game!!");
-                                            this.Close();
-                                        }
-                                        else
-                                        {
-                                            MessageBox.Show(textBox2.Text + " wins the game!!");
-                                            this.Close();
-                                        }
+                                        WinAnnounce();
                                     }
                                 }
                             }
-                            if (previousplayer == 0)
-                            {
-                                P1toplay.Visible = false;
-                                P2toplay.Visible = true;
-                            }
-                            else
-                            {
-                                P1toplay.Visible = true;
-                                P2toplay.Visible = false;
-                            }
-                            if (previousplayer == 1 && speechenabled == true)
-                            {
-                                synthesizer.SpeakAsync("It is " + textBox1.Text + "'s turn.");
-                            }
-                            else if (previousplayer == 0 && speechenabled == true)
-                            {
-                                synthesizer.SpeakAsync("It is " + textBox2.Text + "'s turn.");
-                            }
+
+                            PlayerTurnIcon();
+                            MoveSpeech();
                             break;
                         }
                     }
@@ -237,331 +196,54 @@ namespace Game2
             }
 
         }
-       /* public void CheckSurroundings(int placedX, int placedY, int oppplayer)
+        private void PlayerTurnIcon()
         {
-            ValidPlacement vp = new ValidPlacement(); // new valid placement instance
-            int curplayer = 10; //default current player
-            validmove = false; //valid move default is false
-
-            if (oppplayer == 0) { curplayer = 1; } //current player is the opposite to the previous player
-            else if (oppplayer == 1) { curplayer = 0; }
-
-
-            int xcheck; //set default value 
-            int ycheck; // set default value 
-
-            int furtherx;
-            int furthery;
-
-
-
-            for (int i = 0; i < vp.ysurrounding.Length; ++i) //run through each possible movement around the placed tile
+            if (previousplayer == 0)
             {
-                int lookincrease = 2; //starting increase when looking for a friendly tile
-
-                xcheck = placedX + vp.xsurrounding[i]; //check the top left tile first and check clockwise after
-                ycheck = placedY + vp.ysurrounding[i];
-
-                if (xcheck >= 8 || xcheck < 0) { } //cancel the check if next to a corner or side
-                else if (ycheck >= 8 || ycheck < 0) { }
-
-                else if (gameboardTiles[xcheck, ycheck] == oppplayer) //check that the tile next to the placed tile is an opposition player
-                {
-                    for (int j = 0; j < 8; ++j)
-                    {
-                        furtherx = placedX + (vp.xsurrounding[i] * lookincrease); //check a tile further for a friendly tile
-                        furthery = placedY + (vp.ysurrounding[i] * lookincrease);
-
-                        if (furtherx >= 8 || furtherx < 0) { }
-                        else if (furthery >= 8 || furthery < 0) { }
-                        else if (gameboardTiles[furtherx, furthery] == 10)// if the further tile is an empty game board piece then break the for loop
-                        {
-                            break;
-                        }
-                        else if (gameboardTiles[furtherx, furthery] == curplayer) //if a friendly tile is found along the same line as the opposition tile
-                        {
-                            validmove = true;
-                            changetiles(placedX, placedY, furtherx, furthery, curplayer);
-                            break;
-                        }
-                        else
-                        {
-                            lookincrease++; //if no friendly tile found, increase distance to look
-                        }
-                    }
-                }
-
-            }
-
-            if (validmove != true)
-            {
-                MessageBox.Show("This is not a valid move.");
-            }
-        }*/
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void startGameToolStripMenuItem_Click(object sender, EventArgs e) // Check if players named, if not default:
-        {
-
-        }
-
-        private void helpToolStripMenuItem_Click_1(object sender, EventArgs e) // Help tab information 
-        {
-
-        }
-
-       /* public void changetiles(int startx, int starty, int endx, int endy, int curplayer)
-        {
-            int diffx = endx - startx;
-            int diffy = endy - starty;
-            int xrep;
-            int yrep;
-
-            if (diffx < 0)
-            {
-                xrep = diffx * -1;
+                P1toplay.Visible = false;
+                P2toplay.Visible = true;
             }
             else
             {
-                xrep = diffx;
+                P1toplay.Visible = true;
+                P2toplay.Visible = false;
             }
-
-            if (diffy < 0)
-            {
-                yrep = diffy * -1;
-            }
-            else
-            {
-                yrep = diffy;
-            }
-
-            int rep = Math.Max(xrep, yrep);
-
-            int xplace;
-            int yplace;
-
-
-
-            for (int i = 1; i < rep; i++)
-            {
-                if (diffx == 0)
-                {
-                    xplace = startx;
-                }
-                else
-                {
-                    if (diffx < 0)
-                    {
-                        xplace = endx + i;
-                    }
-                    else
-                    {
-                        xplace = endx - i;
-                    }
-                }
-
-                if (diffy == 0)
-                {
-                    yplace = starty;
-                }
-                else
-                {
-                    if (diffy < 0)
-                    {
-                        yplace = endy + i;
-                    }
-                    else
-                    {
-                        yplace = endy - i;
-                    }
-                }
-                gameboardTiles[xplace, yplace] = curplayer;
-                gameboardPictures[xplace, yplace].Image = Image.FromFile(curplayer + ".png");
-            }
-        }*/
-       /* public void TileCount()
+        }
+        private void WinAnnounce()
         {
-            int P1Tile = 0;
-            int P2Tile = 0;
-
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    if (gameboardTiles[i, j] == 0)
-                    {
-                        P1Tile++;
-                    }
-                    if (gameboardTiles[i, j] == 1)
-                    {
-                        P2Tile++;
-                    }
-                }
-            }
-            label1.Text = Convert.ToString(P1Tile);
-            label2.Text = Convert.ToString(P2Tile);
-
-            WinCheck(P1Tile, P2Tile);
-        }*/
-       /* public void WinAnnounce()
-        {
-            int P1Win = Convert.ToInt32(label1.Text);
-            int P2Win = Convert.ToInt32(label2.Text);
-
-            MessageBox.Show("There are no possible Moves left for either player!");
-
-            if (P1Win == P2Win)
+            if (P1Points == P2Points)
             {
                 MessageBox.Show("The game ends in a draw!!");
-                endgame = true;
                 this.Close();
             }
-            else if (P1Win > P2Win)
+            else if (P1Points > P2Points)
             {
                 MessageBox.Show(textBox1.Text + " wins the game!!");
-                endgame = true;
                 this.Close();
             }
             else
             {
                 MessageBox.Show(textBox2.Text + " wins the game!!");
-                endgame = true;
                 this.Close();
             }
-        }*/
-       /* public void WinCheck(int P1Win, int P2Win)
+        }
+        private void MoveSpeech()
         {
-            int freespaces = 0;
+            var synthesizer = new SpeechSynthesizer();
 
-            for (int i = 0; i < 8; i++)
+            if (previousplayer == 1 && speechenabled == true)
             {
-                for (int j = 0; j < 8; j++)
-                {
-                    if (gameboardTiles[i, j] == 10)
-                    {
-                        freespaces++;
-                    }
-                }
+                synthesizer.SpeakAsync("It is " + textBox1.Text + "'s turn.");
             }
-            if (freespaces > 0) { }
-            else
+            else if (previousplayer == 0 && speechenabled == true)
             {
-                if (P1Win == P2Win)
-                {
-                    MessageBox.Show("The game ends in a draw!!");
-                    endgame = true;
-                    this.Close();
-                }
-                else if (P1Win > P2Win)
-                {
-                    MessageBox.Show(textBox1.Text + " wins the game!!");
-                    endgame = true;
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show(textBox2.Text + " wins the game!!");
-                    endgame = true;
-                    this.Close();
-                }
+                synthesizer.SpeakAsync("It is " + textBox2.Text + "'s turn.");
             }
-        }*/
-
-       /* public void ValidMovePossible(int prevplayer)
+        }
+        private void Form1_Load(object sender, EventArgs e)
         {
-            int nextplayer;
 
-            if (prevplayer == 0)
-            {
-                nextplayer = 1;
-            }
-            else
-            {
-                nextplayer = 0;
-            }
-            ValidPlacement vp = new ValidPlacement(); // new valid placement instance
-            validmovepossible = false; //valid move default is false
-
-            int xcheck; //set default value 
-            int ycheck; // set default value 
-
-            int furtherx;
-            int furthery;
-
-            for (int x = 0; x < 8; x++)
-            {
-                for (int y = 0; y < 8; y++)
-                {
-                    if (gameboardTiles[x, y] == 10) //if a blank gameboard peice
-                    {
-                        gameboardPictures[x, y].Image = Image.FromFile("10.png"); // return to normal gamepiece look
-                    }
-
-                    for (int i = 0; i < vp.ysurrounding.Length; ++i)
-                    {
-                        int lookincrease = 2; //starting increase when looking for a friendly tile
-
-                        xcheck = x + vp.xsurrounding[i]; //check the top left tile first and check clockwise after
-                        ycheck = y + vp.ysurrounding[i];
-
-                        if (xcheck >= 8 || xcheck < 0) { } //cancel the check if next to a corner or side
-                        else if (ycheck >= 8 || ycheck < 0) { }
-
-                        else if (gameboardTiles[xcheck, ycheck] == prevplayer) //check that the tile next to the placed tile is an opposition player
-                        {
-                            for (int j = 0; j < 8; ++j)
-                            {
-                                furtherx = x + (vp.xsurrounding[i] * lookincrease); //check a tile further for a friendly tile
-                                furthery = y + (vp.ysurrounding[i] * lookincrease);
-
-                                if (furtherx >= 8 || furtherx < 0) { }
-                                else if (furthery >= 8 || furthery < 0) { }
-                                else if (gameboardTiles[furtherx, furthery] == 10)// if the further tile is an empty game board piece then break the for loop
-                                {
-                                    break;
-                                }
-                                else if (gameboardTiles[x, y] == nextplayer || gameboardTiles[x, y] == prevplayer)
-                                {
-                                    break;
-                                }
-                                else if (gameboardTiles[furtherx, furthery] == nextplayer) //if a friendly tile is found along the same line as the opposition tile
-                                {
-                                    validmovepossible = true;
-                                    gameboardPictures[x, y].Image = Image.FromFile("11.png"); //show that this is a possiible move
-                                    break;
-                                }
-                                else
-                                {
-                                    lookincrease++; //if no friendly tile found, increase distance to look
-                                }
-
-                            }
-                        }
-                    }
-                }
-
-            }
-
-            if (validmovepossible != true)
-            {
-                if (nextplayer == 0)
-                {
-                    MessageBox.Show("There are no available moves for " + textBox1.Text + ". Switching to " + textBox2.Text);
-                }
-                else
-                {
-                    MessageBox.Show("There are no available moves for " + textBox2.Text + ". Switching to " + textBox1.Text);
-                }
-            }
-        }*/
+        }
 
         private void InformationPanelMenuItem_Click(object sender, EventArgs e)
         {
@@ -591,48 +273,33 @@ namespace Game2
         {
             if (gameboardPictures[0, 0] != null)
             {
-                DialogResult savecurrentgame = MessageBox.Show("Do you wish to save this game?", "Save Game?", MessageBoxButtons.YesNo);
-                if (savecurrentgame == DialogResult.Yes)
-                {
-                    savegame.savegame(P1, P2, gameboardTiles, previousplayer);
-                }
-
-                DialogResult renameplayers = MessageBox.Show("Do you wish to rename the players in this game?", "Rename players?", MessageBoxButtons.YesNo);
-                if (renameplayers == DialogResult.Yes)
-                {
-                    textBox1.Text = Interaction.InputBox("What would you like to name the 1st player?", "Name 1st Player");
-                    textBox2.Text = Interaction.InputBox("What would you like to name the 2nd player?", "Name 2nd Player");
-                }
-
-                Array.Clear(gameboardPictures,0,gameboardPictures.Length);
-                Array.Clear(gameboardTiles,0,gameboardTiles.Length);
-
-                previousplayer = 1;
+                ResetGame();
             }
-
-            if (textBox1.Text == "")
+            else
             {
-                textBox1.Text = "Player 1";
+                if (textBox1.Text == "")
+                {
+                    textBox1.Text = "Player 1";
+                }
+                if (textBox2.Text == "")
+                {
+                    textBox2.Text = "Player 2";
+                }
+                textBox1.Enabled = false;
+                textBox2.Enabled = false;
+
+                label1.Text = Convert.ToString(2);
+                label2.Text = Convert.ToString(2);
+
+                P1 = textBox1.Text;
+                P2 = textBox2.Text;
+
+                P1toplay.Visible = true;
+                exitToolStripMenuItem.Visible = true;
+                saveGameToolStripMenuItem.Visible = true;
+
+                GameBoardTileSetUp(); //call gameboard Tile setup method
             }
-            if (textBox2.Text == "")
-            {
-                textBox2.Text = "Player 2";
-            }
-            textBox1.Enabled = false;
-            textBox2.Enabled = false;
-
-            label1.Text = Convert.ToString(2);
-            label2.Text = Convert.ToString(2);
-
-            P1 = textBox1.Text;
-            P2 = textBox2.Text;
-
-            P1toplay.Visible = true;
-            exitToolStripMenuItem.Visible = true;
-            saveGameToolStripMenuItem.Visible = true;
-
-            GameBoardTileSetUp(); //call gameboard Tile setup method
-
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -640,7 +307,6 @@ namespace Game2
             HelpForm helpForm = new HelpForm();
             helpForm.ShowDialog();
         }
-
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DialogResult savecurrentgame = MessageBox.Show("Do you wish to save this game?", "Save Game?", MessageBoxButtons.YesNo);
@@ -650,7 +316,6 @@ namespace Game2
             }
 
             this.Close();
-
         }
 
         private void saveGameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -660,13 +325,43 @@ namespace Game2
             {
                 savegame.savegame(P1, P2, gameboardTiles, previousplayer);
             }
-
-
         }
 
         private void restoreGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             savegame.LoadGame();
+        }
+        private void ResetGame()
+        {
+            GameEngine ge = new GameEngine(gameboardTiles, gameboardPictures);
+
+            DialogResult savecurrentgame = MessageBox.Show("Do you wish to save this game?", "Save Game?", MessageBoxButtons.YesNo);
+            if (savecurrentgame == DialogResult.Yes)
+            {
+                savegame.savegame(P1, P2, gameboardTiles, previousplayer);
+            }
+
+            DialogResult renameplayers = MessageBox.Show("Do you wish to rename the players in this game?", "Rename players?", MessageBoxButtons.YesNo);
+            if (renameplayers == DialogResult.Yes)
+            {
+                textBox1.Text = Interaction.InputBox("What would you like to name the 1st player?", "Name 1st Player");
+                textBox2.Text = Interaction.InputBox("What would you like to name the 2nd player?", "Name 2nd Player");
+            }
+
+            ge.ResetBoard();
+            gameboardPictures = ge.gameboardPictures;
+            gameboardTiles = ge.gameboardTiles;
+
+            previousplayer = 1;
+
+            ge.ValidMovePossible(previousplayer);
+
+            label1.Text = Convert.ToString(2);
+            label2.Text = Convert.ToString(2);
+        }
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            savegame.SavePreset(speechenabled, InformationPanelMenuItem.Checked);
         }
     }
 }
