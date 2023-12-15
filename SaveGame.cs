@@ -14,6 +14,12 @@ namespace Game2
         AppSettings appsettings = new AppSettings();
         SaveDataForm savedataform = new SaveDataForm();
 
+        public int[,] LoadedTiles;
+        public string Player1;
+        public string Player2;
+        public int PrevPlayer;
+
+
         public bool speechstart;
         public bool infopanlestart;
         public bool savesfull;
@@ -21,37 +27,29 @@ namespace Game2
         {
             CheckFileExists();
 
-            int nexttoplay;
-            if (prevplayer == 0) { nexttoplay = 1; }
-            else { nexttoplay = 0; }
-
             var Save = new GameStateObject();
             Save.Player1 = p1;
             Save.Player2 = p2;
             Save.DigitArray = digitarray;
-            Save.NextPlayer = nexttoplay;
+            Save.PrevPlayer = prevplayer;
 
-            savedataform.ShowForm(savesfull);
+            savedataform.ShowForm(savesfull, 0);
 
-            if (savedataform.SaveTitle == null) { }
+            if (savedataform.userexit == true) { }
             else
             {
                 Save.Title = savedataform.SaveTitle;
 
                 if (savesfull == true)
                 {
-                    appsettings.GameStates.RemoveAt(savedataform.SaveFileSelect - 1);
+                    appsettings.GameStates.RemoveAt(savedataform.SaveFileSelect);
                 }
 
-                appsettings.GameStates.Insert(savedataform.SaveFileSelect - 1, Save);
+                appsettings.GameStates.Insert(savedataform.SaveFileSelect, Save);
 
                 if (appsettings.GameStates.Count == 5)
                 {
                     savesfull = true;
-                    for (int i = 0; i < appsettings.GameStates.Count; i++)
-                    {
-                        savedataform.SaveNames(appsettings.GameStates[i].Title); ;
-                    }
                     SerialiseSave();
                 }
             }
@@ -66,7 +64,15 @@ namespace Game2
             string jsontext = File.ReadAllText(SaveFileName);
             var loadobject = JsonConvert.DeserializeObject<AppSettings>(jsontext);
 
-            savedataform.LoadItems(appsettings.GameStates);
+            savedataform.ShowForm(savesfull, 1);
+            if (savedataform.userexit == true) { }
+            else
+            {
+                LoadedTiles = loadobject.GameStates[savedataform.LoadFile].DigitArray;
+                Player1 = loadobject.GameStates[savedataform.LoadFile].Player1;
+                Player2 = loadobject.GameStates[savedataform.LoadFile].Player2;
+                PrevPlayer = loadobject.GameStates[savedataform.LoadFile].PrevPlayer;
+            }
         }
         internal void PreLoad()
         {
@@ -94,7 +100,7 @@ namespace Game2
             public int[,] DigitArray;
             public string Player1;
             public string Player2;
-            public int NextPlayer;
+            public int PrevPlayer;
             public string Title;
         }
         public class AppSettings

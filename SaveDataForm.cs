@@ -16,6 +16,7 @@ namespace Game2
     {
         List<string> savetitles = new List<string>();
 
+        public int LoadFile;
         public bool userexit = false;
         public DialogResult namedsave;
         public string P1;
@@ -31,23 +32,78 @@ namespace Game2
         public SaveDataForm()
         {
             InitializeComponent();
+
+            FileCombo.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.ShowInTaskbar = false;
+            this.ControlBox = false;
+            this.Text = null;
         }
-        internal void ShowForm(bool savesfull)
+        internal void ShowForm(bool savesfull, int function)
         {
             SaveTitle = null;
 
+            if (function == 0)
+            {
+                Save.Visible = true;
+                Load.Visible = false;
+            }
+            else
+            {
+                Save.Visible = false;
+                Load.Visible = true;
+            }
+
             if (savesfull == true)
             {
-                SaveFile1.Text = savetitles[0];
-                SaveFile2.Text = savetitles[1];
-                SaveFile3.Text = savetitles[2];
-                SaveFile4.Text = savetitles[3];
-                SaveFile5.Text = savetitles[4];
-
+                LoadItems();
                 this.ShowDialog();
             }
             else
             {
+                namedsave = MessageBox.Show("Do you want to name your save?", "File save name", MessageBoxButtons.YesNo);
+                if (namedsave == DialogResult.Yes)
+                {
+                    SaveTitle = Interaction.InputBox("What would you like to name this save file?", "Name save file");
+                    if(this.DialogResult == DialogResult.Cancel)
+                    {
+                        this.Close();
+                    }
+                }
+                else
+                {
+                    SaveTitle = DateTime.Now.ToString();
+                }
+            }
+        }
+        internal void LoadItems()
+        {
+            FileCombo.Items.Clear();
+
+            for (int i = 0; i < savetitles.Count; i++)
+            {
+                FileCombo.Items.Add(savetitles[i]);
+            }
+        }
+        internal void SaveNames(string title)
+        {
+            savetitles.Add(title);
+        }
+        private void Load_Click(object sender, EventArgs e)
+        {
+            if (FileCombo.SelectedItem == null) { }
+            else
+            {
+                LoadFile = FileCombo.SelectedIndex;
+                this.Close();
+            }
+        }
+        private void Save_Click(object sender, EventArgs e)
+        {
+            if (FileCombo.SelectedItem == null) { }
+            else
+            {
+                SaveFileSelect = FileCombo.SelectedIndex;
+
                 namedsave = MessageBox.Show("Do you want to name your save?", "File save name", MessageBoxButtons.YesNo);
                 if (namedsave == DialogResult.Yes)
                 {
@@ -57,122 +113,17 @@ namespace Game2
                 {
                     SaveTitle = DateTime.Now.ToString();
                 }
+
+                savetitles.RemoveAt(SaveFileSelect);
+                savetitles.Insert(SaveFileSelect, SaveTitle);
+
+                this.Close();
             }
         }
-        internal void LoadItems(List<SaveGame.GameStateObject> Gameloads)
-        {
-            for (int i = 0; i < savetitles.Count; i++)
-            {
-                comboBox1.Items.Add(savetitles[i]);
-            }
 
-            this.ShowDialog();
-        }
-        internal void SaveNames(string title)
+        private void Close_Click(object sender, EventArgs e)
         {
-            savetitles.Add(title);
-        }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            SaveFileSelect = 1;
-
-            namedsave = MessageBox.Show("Do you want to name your save?", "File save name", MessageBoxButtons.YesNo);
-            if (namedsave == DialogResult.Yes)
-            {
-                SaveTitle = Interaction.InputBox("What would you like to name this save file?", "Name save file");
-            }
-            else
-            {
-                SaveTitle = DateTime.Now.ToString();
-            }
-            savetitles.RemoveAt(SaveFileSelect - 1);
-            savetitles.Insert(SaveFileSelect - 1, SaveTitle);
-
             this.Close();
-        }
-        private void button2_Click(object sender, EventArgs e)
-        {
-            SaveFileSelect = 2;
-
-            namedsave = MessageBox.Show("Do you want to name your save?", "File save name", MessageBoxButtons.YesNo);
-            if (namedsave == DialogResult.Yes)
-            {
-                SaveTitle = Interaction.InputBox("What would you like to name this save file?", "Name save file");
-            }
-            else
-            {
-                SaveTitle = DateTime.Now.ToString();
-            }
-            savetitles.RemoveAt(SaveFileSelect - 1);
-            savetitles.Insert(SaveFileSelect - 1, SaveTitle);
-
-            this.Close();
-
-        }
-        private void button3_Click(object sender, EventArgs e)
-        {
-            SaveFileSelect = 3;
-
-            namedsave = MessageBox.Show("Do you want to name your save?", "File save name", MessageBoxButtons.YesNo);
-            if (namedsave == DialogResult.Yes)
-            {
-                SaveTitle = Interaction.InputBox("What would you like to name this save file?", "Name save file");
-            }
-            else
-            {
-                SaveTitle = DateTime.Now.ToString();
-            }
-            savetitles.RemoveAt(SaveFileSelect - 1);
-            savetitles.Insert(SaveFileSelect - 1, SaveTitle);
-
-            this.Close();
-        }
-        private void button4_Click(object sender, EventArgs e)
-        {
-            SaveFileSelect = 4;
-
-            namedsave = MessageBox.Show("Do you want to name your save?", "File save name", MessageBoxButtons.YesNo);
-            if (namedsave == DialogResult.Yes)
-            {
-                SaveTitle = Interaction.InputBox("What would you like to name this save file?", "Name save file");
-            }
-            else
-            {
-                SaveTitle = DateTime.Now.ToString();
-            }
-            savetitles.RemoveAt(SaveFileSelect - 1);
-            savetitles.Insert(SaveFileSelect - 1, SaveTitle);
-
-            this.Close();
-        }
-        private void button5_Click(object sender, EventArgs e)
-        {
-            SaveFileSelect = 5;
-
-            namedsave = MessageBox.Show("Do you want to name your save?", "File save name", MessageBoxButtons.YesNo);
-            if (namedsave == DialogResult.Yes)
-            {
-                SaveTitle = Interaction.InputBox("What would you like to name this save file?", "Name save file");
-            }
-            else
-            {
-                SaveTitle = DateTime.Now.ToString();
-            }
-            savetitles.RemoveAt(SaveFileSelect - 1);
-            savetitles.Add(SaveTitle);
-
-            this.Close();
-        }
-        private void SaveDataForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                userexit = true;
-            }
-        }
-        private void Load_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show(Convert.ToString(comboBox1.SelectedItem));
         }
     }
 }

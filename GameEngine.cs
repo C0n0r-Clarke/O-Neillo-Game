@@ -95,8 +95,8 @@ namespace Game2
             }
             ValidPlacement vp = new ValidPlacement(); // new valid placement instance
 
-            int xcheck; //set default value 
-            int ycheck; // set default value 
+            int xcheck;
+            int ycheck; 
 
             int furtherx;
             int furthery;
