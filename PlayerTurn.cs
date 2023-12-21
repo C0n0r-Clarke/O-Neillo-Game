@@ -10,6 +10,10 @@ namespace Game2
     public class PlayerTurn
     {
         public int currentplayer;
+        /// <summary>
+        /// Determines who the current player is, based off who the previous player was
+        /// </summary>
+        /// <param name="switchplayer"></param>
         public void playerturn(int switchplayer) //take previous player and return next player
         {
             switch (switchplayer)
@@ -26,11 +30,5 @@ namespace Game2
                     }
             }
         }
-    }
-    public class ValidPlacement
-    {
-        public int[] xsurrounding = { -1, -1, -1, 0, 0, 1, 1, 1};
-        public int[] ysurrounding = { -1, 0, 1, -1, 1, 1, 0, -1};
-
     }
 }

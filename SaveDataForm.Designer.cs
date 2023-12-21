@@ -28,22 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            SaveLabel = new Label();
+            SaveDataFormLabel = new Label();
             FileCombo = new ComboBox();
             Load = new Button();
             Save = new Button();
             Close = new Button();
+            SaveText = new Label();
             SuspendLayout();
             // 
-            // SaveLabel
+            // SaveDataFormLabel
             // 
-            SaveLabel.AutoSize = true;
-            SaveLabel.Location = new Point(308, 62);
-            SaveLabel.MaximumSize = new Size(200, 200);
-            SaveLabel.Name = "SaveLabel";
-            SaveLabel.Size = new Size(198, 75);
-            SaveLabel.TabIndex = 6;
-            SaveLabel.Text = "Max save files reached! Please select a save file to overwrite.";
+            SaveDataFormLabel.AutoSize = true;
+            SaveDataFormLabel.Location = new Point(304, 104);
+            SaveDataFormLabel.MaximumSize = new Size(200, 200);
+            SaveDataFormLabel.Name = "SaveDataFormLabel";
+            SaveDataFormLabel.Size = new Size(197, 75);
+            SaveDataFormLabel.TabIndex = 6;
+            SaveDataFormLabel.Text = "Please select a save file in the dropdown below!";
             // 
             // FileCombo
             // 
@@ -83,16 +84,27 @@
             Close.UseVisualStyleBackColor = true;
             Close.Click += Close_Click;
             // 
+            // SaveText
+            // 
+            SaveText.AutoSize = true;
+            SaveText.Location = new Point(304, 9);
+            SaveText.MaximumSize = new Size(200, 200);
+            SaveText.Name = "SaveText";
+            SaveText.Size = new Size(198, 75);
+            SaveText.TabIndex = 11;
+            SaveText.Text = "Max Save Files reached! You must overwrite a previous Save File!";
+            // 
             // SaveDataForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(SaveText);
             Controls.Add(Close);
             Controls.Add(Save);
             Controls.Add(Load);
             Controls.Add(FileCombo);
-            Controls.Add(SaveLabel);
+            Controls.Add(SaveDataFormLabel);
             MaximumSize = new Size(822, 506);
             MinimumSize = new Size(822, 506);
             Name = "SaveDataForm";
@@ -103,10 +115,11 @@
         }
 
         #endregion
-        private Label SaveLabel;
+        private Label SaveDataFormLabel;
         private ComboBox FileCombo;
         private Button Load;
         private Button Save;
         private Button Close;
+        private Label SaveText;
     }
 }

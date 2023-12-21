@@ -253,7 +253,6 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "O'Neillo Game v1.0";
             FormClosing += Form1_FormClosing;
-            Load += Form1_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             InfoPanel.ResumeLayout(false);

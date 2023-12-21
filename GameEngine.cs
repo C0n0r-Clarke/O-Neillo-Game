@@ -18,16 +18,22 @@ namespace Game2
         public int nextplayer;
 
         public bool validmovepossible;
-        public bool validmove; //valid move default is false
+        public bool validmove;
 
         public GameEngine(int[,] Tileboard, PictureBox[,] Pictureboard) 
         {
             gameboardTiles = Tileboard; 
             gameboardPictures = Pictureboard;
         }
+        /// <summary>
+        /// Checks the clicked Tiles surrounding for a valid move, then calls chnage tiles
+        /// </summary>
+        /// <param name="placedX">The X coordinate of the selected Tile</param>
+        /// <param name="placedY">The Y coordinate of the selected Tile</param>
+        /// <param name="oppplayer">The opposing player</param>
         internal void CheckSurroundings(int placedX, int placedY, int oppplayer)
         {
-            ValidPlacement vp = new ValidPlacement(); // new valid placement instance
+            ValidPlacement vp = new ValidPlacement(); 
             int curplayer = 10; //default current player
            
 
@@ -49,7 +55,6 @@ namespace Game2
 
                 if (xcheck >= 8 || xcheck < 0) { } //cancel the check if next to a corner or side
                 else if (ycheck >= 8 || ycheck < 0) { }
-
                 else if (gameboardTiles[xcheck, ycheck] == oppplayer) //check that the tile next to the placed tile is an opposition player
                 {
                     for (int j = 0; j < 8; ++j)
@@ -75,14 +80,16 @@ namespace Game2
                         }
                     }
                 }
-
             }
-
             if (validmove != true)
             {
-                MessageBox.Show("This is not a valid move.");
+                MessageBox.Show("This is not a valid move.","Invalid Move!");
             }
         }
+        /// <summary>
+        /// checks before a players go if there is a move possible for them
+        /// </summary>
+        /// <param name="prevplayer">Previous Player</param>
         internal void ValidMovePossible(int prevplayer)
         {
             if (prevplayer == 0)
@@ -93,7 +100,7 @@ namespace Game2
             {
                 nextplayer = 0;
             }
-            ValidPlacement vp = new ValidPlacement(); // new valid placement instance
+            ValidPlacement vp = new ValidPlacement();
 
             int xcheck;
             int ycheck; 
@@ -154,6 +161,14 @@ namespace Game2
                 }
             }
         }
+        /// <summary>
+        /// Changes the Picture images based on the Tile array
+        /// </summary>
+        /// <param name="startx">Which X coordinate Tile was clicked</param>
+        /// <param name="starty">Which Y coordinate Tile was clicked</param>
+        /// <param name="endx">Which X coordinate Tile was found at the end of the line in the CheckSurrounding Method</param>
+        /// <param name="endy">Which Y coordinate Tile was found at the end of the line in the CheckSurrounding Method</param>
+        /// <param name="curplayer">Who the current player is</param>
         internal void changetiles(int startx, int starty, int endx, int endy, int curplayer)
         {
             int diffx = endx - startx;
@@ -221,9 +236,11 @@ namespace Game2
                 gameboardPictures[xplace, yplace].Image = Image.FromFile(curplayer + ".png");
             }
         }
+        /// <summary>
+        /// Counts how many tiles each player has
+        /// </summary>
         internal void TileCount()
         {
-
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
@@ -238,9 +255,11 @@ namespace Game2
                     }
                 }
             }
-
             WinCheck();
         }
+        /// <summary>
+        /// Checks if there are any spaces left on the game board and determines if the game should end
+        /// </summary>
         internal void WinCheck()
         {
             int freespaces = 0;
@@ -261,6 +280,9 @@ namespace Game2
                 endgame = true;
             }
         }
+        /// <summary>
+        /// Sets the board back up to the default state
+        /// </summary>
         public void ResetBoard()
         {
             for(int i = 0;i < 8; i++)
@@ -281,5 +303,6 @@ namespace Game2
             gameboardTiles[4, 4] = 1;
             gameboardPictures[4, 4].Image = Image.FromFile("1.png");
         }
+
     }
 }
